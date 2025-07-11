@@ -1,9 +1,9 @@
 package main
 
 import (
-	"time"
 	"errors"
 	"fmt"
+	"time"
 )
 
 type Todo struct {
@@ -42,4 +42,27 @@ func (todolist *TodoList) delete(index int) error{
 	}
 	*todolist = append(t[:index], t[index+1:]...)	
 	return nil
+}
+
+func (todolist *TodoList) toggle(index int) error{
+	t:=*todolist
+	if err := t.validateIndex(index); err!=nil {
+		return err
+	}
+	isCompleted := t[index].Completed
+	if !isCompleted {
+		completionTime := time.Now()
+		t[index].CompletedAt = &completionTime
+	}
+	t[index].Completed = !isCompleted	
+	return nil
+}
+
+func (todolist *TodoList) edit(index int,title string) error {
+	t := *todolist
+	if err := t.validateIndex(index); err!=nil {
+		return err
+	}
+	t[index].Title = title
+	return nil	
 }
